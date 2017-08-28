@@ -2,32 +2,29 @@
  * Copyright 2017 Christopher Haverman
  * All Rights Reserved
  **/
-import {Nav, NavItem, NavLink, Navbar, NavbarBrand} from 'reactstrap';
-import React, {Component} from 'react';
+import MainNav from './MainNav';
+import {Navbar, NavbarBrand} from 'reactstrap';
+import OutputTable from './OutputTable';
+import React from 'react';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        <Navbar color="dark" className="text-light">
-          <NavbarBrand>generator</NavbarBrand>
-        </Navbar>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-3">
-              <Nav vertical>
-                <NavItem>
-                  <NavLink href="#">NPC</NavLink>
-                </NavItem>
-              </Nav>
-            </div>
+const App = () => {
+  return (
+    <div>
+      <Navbar color="dark" className="text-light">
+        <NavbarBrand>generator</NavbarBrand>
+      </Navbar>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-3">
+            <MainNav/>
+          </div>
+          <div className="col-4">
+            <OutputTable/>
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default App;
