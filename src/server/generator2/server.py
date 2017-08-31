@@ -11,5 +11,6 @@ __author__ = 'Christopher Haverman'
 def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.add_route('home', '/')
+    config.add_route('test', '/api/v1/test')
     config.scan('.views')
     return config.make_wsgi_app()
