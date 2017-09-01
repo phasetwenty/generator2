@@ -19,5 +19,16 @@ class Views:
 
     @view_config(route_name='test')
     def test(self):
-        self.response.json = ['Name', 'Sex', 'Race', 'Class', 'Description', 'Extra']
+        self.response.json = [
+            ('Name', 'Horse'),
+            ('Sex', 'Male'),
+            ('Race', 'Human'),
+            ('Class', 'Horse'),
+            (
+                'Description',
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce faucibus nunc massa, et tempus tortor '
+                'rhoncus eget. Aenean volutpat.'
+            ),
+            ('Extra', 'Lorem ipsum dolor sit amet, consectetur adipiscing metus.')
+        ]
         return self.response
