@@ -3,12 +3,17 @@ from setuptools import find_packages, setup
 requires = (
     'pyramid~=1.9.1',
     'pyramid_jinja2~=2.7.0',
-    'SQLAlchemy~=1.1.13'
+    'pyramid-retry~=0.5.0',
+    'pyramid_tm~=2.2.0',
+    'SQLAlchemy~=1.1.13',
+    'zope.sqlalchemy~=0.7.7'
 )
 
 entry_points = """
 [paste.app_factory]
 main = generator2.server:main
+[console_scripts]
+initializedb = generator2.scripts.initializedb:main
 """
 
 setup(

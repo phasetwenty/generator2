@@ -3,12 +3,11 @@
 #
 from pyramid.response import Response
 from pyramid.view import view_config
+from sqlalchemy.exc import DBAPIError
 
-import logging
+from ..models.main import Object
 
 __author__ = 'Christopher Haverman'
-
-_logger = logging.getLogger(__name__)
 
 
 class Views:
@@ -19,6 +18,10 @@ class Views:
 
     @view_config(route_name='test')
     def test(self):
+        """
+        Test endpoint used as a POC for getting data from the server.
+        :return: Response
+        """
         self.response.json = [
             ('Name', 'Horse'),
             ('Sex', 'Male'),
@@ -31,4 +34,16 @@ class Views:
             ),
             ('Extra', 'Lorem ipsum dolor sit amet, consectetur adipiscing metus.')
         ]
+        return self.response
+
+    @view_config(route_name='dbfetch')
+    def dbfetch(self):
+        try:
+            query = self.request.dbsession.query(Object)
+            test_obj = query.first()
+        except DBAPIError:
+            self.response.status = 500
+            return self.response
+
+        self.response.json = {'object': test_obj.name}
         return self.response

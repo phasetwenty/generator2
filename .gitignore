@@ -203,3 +203,4 @@ pyvenv.cfg
 pip-selfcheck.json
 
 ### User
+*.sqlite*
