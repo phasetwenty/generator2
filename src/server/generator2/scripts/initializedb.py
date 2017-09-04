@@ -4,12 +4,8 @@
 import os
 import sys
 
-try:
-    from pyramid.paster import get_appsettings, setup_logging
-    from pyramid.scripts.common import parse_vars
-except ImportError:
-    sys.stderr.write('Pyramid is missing from this environment. Perhaps you need to activate your virtualenv?')
-    sys.exit(1)
+from pyramid.paster import get_appsettings, setup_logging
+from pyramid.scripts.common import parse_vars
 
 from generator2.models import get_engine
 from generator2.models.meta import Base
@@ -35,3 +31,11 @@ def main(argv=None):
 
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
+
+if __name__ == '__main__':
+    path_to_script = sys.argv[0]
+    print(path_to_script)
+    sys.stderr.write(('It appears you\'ve run this script using `$ python {}` but it\'s intented to be run '
+                      'from a version installed by setuptools. Make sure you\'ve setup the package using `setup.py`, '
+                      'then run it using `$ initializedb`.\n').format(path_to_script))
+    sys.exit(1)
