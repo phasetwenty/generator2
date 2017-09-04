@@ -3,7 +3,6 @@
 #
 import os
 import sys
-import transaction
 
 try:
     from pyramid.paster import get_appsettings, setup_logging
@@ -12,7 +11,7 @@ except ImportError:
     sys.stderr.write('Pyramid is missing from this environment. Perhaps you need to activate your virtualenv?')
     sys.exit(1)
 
-from generator2.models import Instance, Object, Property, get_engine, get_session_factory, get_tm_session
+from generator2.models import get_engine
 from generator2.models.meta import Base
 
 __author__ = 'Christopher Haverman'
@@ -36,16 +35,3 @@ def main(argv=None):
 
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
-
-    session_factory = get_session_factory(engine)
-
-    with transaction.manager:
-        dbsession = get_tm_session(session_factory, transaction.manager)
-
-        test_obj = Object(name='Thief')
-        dbsession.add(test_obj)
-
-        test_property = Property(descriptor='The thief is', object=test_obj)
-        dbsession.add(test_property)
-
-        test_instance1 = Instance(value='')
