@@ -3,9 +3,8 @@
 #
 from pyramid.response import Response
 from pyramid.view import view_config
-from sqlalchemy.exc import DBAPIError
 
-from ..models.main import Object
+from ..domain.object import ObjectService
 
 __author__ = 'Christopher Haverman'
 
@@ -15,6 +14,8 @@ class Views:
         self.request = request
         self.response = Response(content_type='application/json')
         self.response.headers['Access-Control-Allow-Origin'] = '*'
+
+        self._object_service = ObjectService(request.dbsession)
 
     @view_config(route_name='test')
     def test(self):
@@ -36,14 +37,12 @@ class Views:
         ]
         return self.response
 
-    @view_config(route_name='dbfetch')
-    def dbfetch(self):
-        try:
-            query = self.request.dbsession.query(Object)
-            test_obj = query.first()
-        except DBAPIError:
+    @view_config(route_name='random_object')
+    def random_object(self):
+        random_object = self._object_service.random_object
+        if random_object is None:
             self.response.status = 500
-            return self.response
-
-        self.response.json = {'object': test_obj.name}
+            self.response.text = 'You got a bug homey'
+        else:
+            self.response.json = random_object
         return self.response

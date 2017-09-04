@@ -10,15 +10,15 @@ class OutputTable extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {fields: []};
+    this.state = {};
   }
 
   componentWillMount() {
-    fetch('http://localhost:8080/api/v1/test')
+    fetch('http://localhost:8080/api/v1/random-object')
       .then((response) => {
         return response.json();
       }).then((json) => {
-        this.setState({fields: json});
+        this.setState(json);
       });
   }
 
@@ -54,7 +54,9 @@ class OutputTable extends Component {
   }
 
   renderWithData() {
-    const items = this.state.fields.map((pair, index) => { return this.renderSingleCell(index, ...pair); });
+    const items = Object.keys(this.state).map((key, index) => {
+      return this.renderSingleCell(index, key, this.state[key])
+    });
     return (<tbody>{items}</tbody>);
   }
 
@@ -63,9 +65,10 @@ class OutputTable extends Component {
   }
 
   render() {
+    const itemCount = Object.keys(this.state).length;
     return (
         <Table inverse>
-          {this.state.fields.length === 0 ? this.renderEmpty() : this.renderWithData()}
+          {itemCount === 0 ? this.renderEmpty() : this.renderWithData()}
         </Table>
     );
   }
