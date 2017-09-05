@@ -23,18 +23,8 @@ class Views:
         Test endpoint used as a POC for getting data from the server.
         :return: Response
         """
-        self.response.json = [
-            ('Name', 'Horse'),
-            ('Sex', 'Male'),
-            ('Race', 'Human'),
-            ('Class', 'Horse'),
-            (
-                'Description',
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce faucibus nunc massa, et tempus tortor '
-                'rhoncus eget. Aenean volutpat.'
-            ),
-            ('Extra', 'Lorem ipsum dolor sit amet, consectetur adipiscing metus.')
-        ]
+        names = self._object_service.random_name()
+        self.response.json = names
         return self.response
 
     @view_config(route_name='random_object')

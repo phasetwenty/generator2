@@ -6,7 +6,7 @@
 #
 # For more information on the concepts being modeled, see INTRO.md in the docs directory.
 #
-from sqlalchemy import Column, ForeignKey, Integer, Text
+from sqlalchemy import Column, ForeignKey, Integer, Table, Text
 from sqlalchemy.orm import relationship
 
 from .meta import Base
@@ -21,6 +21,17 @@ class Object(Base):
 
     properties = relationship('Property', back_populates='object')
 
+    def __str__(self):
+        return self.name
+
+
+property_tag_lookup_table = Table(
+    'property_tags',
+    Base.metadata,
+    Column('property_id', Integer, ForeignKey('properties.id')),
+    Column('tag_id', Integer, ForeignKey('tags.id'))
+)
+
 
 class Property(Base):
     __tablename__ = 'properties'
@@ -30,6 +41,10 @@ class Property(Base):
 
     instances = relationship('Instance', back_populates='property')
     object = relationship('Object', back_populates='properties')
+    tags = relationship('Tag', secondary=property_tag_lookup_table, back_populates='properties')
+
+    def __str__(self):
+        return self.label
 
 
 class Instance(Base):
@@ -39,3 +54,17 @@ class Instance(Base):
     property_id = Column(Integer, ForeignKey('properties.id'))
 
     property = relationship('Property', back_populates='instances')
+
+    def __str__(self):
+        return self.value
+
+
+class Tag(Base):
+    __tablename__ = 'tags'
+    id = Column(Integer, primary_key=True)
+    name = Column(Text)
+
+    properties = relationship('Property', secondary=property_tag_lookup_table, back_populates='tags')
+
+    def __str__(self):
+        return self.name

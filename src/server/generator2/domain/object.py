@@ -4,10 +4,9 @@
 from random import randint
 import logging
 
-from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
-from ..models import Object
+from ..models import Instance, Object, Property
 
 __author__ = 'Christopher Haverman'
 
@@ -20,7 +19,6 @@ class ObjectService:
     """
     def __init__(self, dbsession):
         self._dbsession = dbsession
-
 
     @property
     def random_object(self):
@@ -40,3 +38,13 @@ class ObjectService:
             return None
 
         return random_object
+
+    def random_name(self):
+        try:
+            name_property = self._dbsession.query(Property).filter(Property.tags.any(name='Name')).first()
+            instances = self._dbsession.query(Instance).filter(Instance.property == name_property).all()
+            name_instance = instances[randint(0, len(instances) - 1)]
+        except DBAPIError:
+            _logger.exception('Failed to query db')
+            return None
+        return name_property.label, name_instance.value
