@@ -34,7 +34,7 @@ class ObjectService:
         try:
             for prop in my_object.properties:
                 instance = prop.instances[randint(0, len(prop.instances) - 1)]
-                random_object[prop.descriptor] = instance.value
+                random_object[prop.label] = instance.value
         except DBAPIError:
             _logger.exception('Failed to construct object')
             return None

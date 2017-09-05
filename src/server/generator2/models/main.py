@@ -25,7 +25,7 @@ class Object(Base):
 class Property(Base):
     __tablename__ = 'properties'
     id = Column(Integer, primary_key=True)
-    descriptor = Column(Text)
+    label = Column(Text)
     object_id = Column(Integer, ForeignKey('objects.id'))
 
     instances = relationship('Instance', back_populates='property')
