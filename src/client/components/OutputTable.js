@@ -18,7 +18,7 @@ class OutputTable extends Component {
       .then((response) => {
         return response.json();
       }).then((json) => {
-        this.setState(json);
+        this.setState(json.objects[0]);
       });
   }
 

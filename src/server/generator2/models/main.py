@@ -6,7 +6,7 @@
 #
 # For more information on the concepts being modeled, see INTRO.md in the docs directory.
 #
-from sqlalchemy import Column, ForeignKey, Integer, Table, Text
+from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import relationship
 
 from .meta import Base
@@ -14,34 +14,60 @@ from .meta import Base
 __author__ = 'Christopher Haverman'
 
 
-class Object(Base):
-    __tablename__ = 'objects'
+class Category(Base):
+    __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
+    name = Column(Text, nullable=False)
 
-    properties = relationship('Property', back_populates='object')
+    subcategories = relationship('Subcategory', back_populates='category')
+    objects = relationship('Object', back_populates='category')
+    properties = relationship('Property', back_populates='category')
 
     def __str__(self):
         return self.name
 
 
-property_tag_lookup_table = Table(
-    'property_tags',
-    Base.metadata,
-    Column('property_id', Integer, ForeignKey('properties.id')),
-    Column('tag_id', Integer, ForeignKey('tags.id'))
-)
+class Subcategory(Base):
+    __tablename__ = 'subcategories'
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+
+    category = relationship('Category', back_populates='subcategories')
+    objects = relationship('Object', back_populates='subcategory')
+    properties = relationship('Property', back_populates='subcategory')
+
+    def __str__(self):
+        return self.name
+
+
+class Object(Base):
+    __tablename__ = 'objects'
+    id = Column(Integer, primary_key=True)
+    kind = Column(Text, nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    subcategory_id = Column(Integer, ForeignKey('subcategories.id'))
+
+    category = relationship('Category', back_populates='objects')
+    properties = relationship('Property', back_populates='object')
+    subcategory = relationship('Subcategory', back_populates='objects')
+
+    def __str__(self):
+        return self.kind
 
 
 class Property(Base):
     __tablename__ = 'properties'
     id = Column(Integer, primary_key=True)
-    label = Column(Text)
+    label = Column(Text, nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    subcategory_id = Column(Integer, ForeignKey('subcategories.id'))
     object_id = Column(Integer, ForeignKey('objects.id'))
 
+    category = relationship('Category', back_populates='properties')
     instances = relationship('Instance', back_populates='property')
+    subcategory = relationship('Subcategory', back_populates='properties')
     object = relationship('Object', back_populates='properties')
-    tags = relationship('Tag', secondary=property_tag_lookup_table, back_populates='properties')
 
     def __str__(self):
         return self.label
@@ -51,20 +77,9 @@ class Instance(Base):
     __tablename__ = 'instances'
     id = Column(Integer, primary_key=True)
     value = Column(Text)
-    property_id = Column(Integer, ForeignKey('properties.id'))
+    property_id = Column(Integer, ForeignKey('properties.id'), nullable=False)
 
     property = relationship('Property', back_populates='instances')
 
     def __str__(self):
         return self.value
-
-
-class Tag(Base):
-    __tablename__ = 'tags'
-    id = Column(Integer, primary_key=True)
-    name = Column(Text)
-
-    properties = relationship('Property', secondary=property_tag_lookup_table, back_populates='tags')
-
-    def __str__(self):
-        return self.name

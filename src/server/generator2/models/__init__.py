@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import configure_mappers
 import zope.sqlalchemy
 
-from .main import Instance, Object, Property, Tag
+from .main import Category, Instance, Object, Property, Subcategory
 
 __author__ = 'Christopher Haverman'
 

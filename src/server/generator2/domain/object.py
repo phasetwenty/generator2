@@ -4,6 +4,7 @@
 from random import randint
 import logging
 
+from sqlalchemy import or_
 from sqlalchemy.exc import DBAPIError
 
 from ..models import Instance, Object, Property
@@ -28,23 +29,13 @@ class ObjectService:
             _logger.exception('Failed to lookup object in database')
             return None
 
-        random_object = {'name': my_object.name}
-        try:
-            for prop in my_object.properties:
-                instance = prop.instances[randint(0, len(prop.instances) - 1)]
-                random_object[prop.label] = instance.value
-        except DBAPIError:
-            _logger.exception('Failed to construct object')
-            return None
-
+        additional_properties = (self._dbsession.query(Property).filter(
+            Property.category == my_object.category,
+            Property.subcategory == my_object.subcategory,
+            Property.object_id == None)).all()
+        properties = my_object.properties + additional_properties
+        random_object = {
+            property.label: property.instances[randint(0, len(property.instances) - 1)].value
+            for property in properties
+        }
         return random_object
-
-    def random_name(self):
-        try:
-            name_property = self._dbsession.query(Property).filter(Property.tags.any(name='Name')).first()
-            instances = self._dbsession.query(Instance).filter(Instance.property == name_property).all()
-            name_instance = instances[randint(0, len(instances) - 1)]
-        except DBAPIError:
-            _logger.exception('Failed to query db')
-            return None
-        return name_property.label, name_instance.value

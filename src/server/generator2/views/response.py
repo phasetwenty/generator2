@@ -15,14 +15,13 @@ class ApiResponse:
         """
         :keyword message: A UI-facing error message, or empty.
         :keyword objects: Iterable of objects (in the domain sense).
-        :keyword order: Iterable of string keys of ``objects``.
         :keyword status: Either "error" (default) or "ok".
         """
         self.message = kwargs.get('message', '')
         self.objects = kwargs.get('objects', [])
         self.status = kwargs.get('status', self.ERROR)
 
-    def __json__(self, request):
+    def to_dict(self):
         return {
             'status': {
                 'code': self.status,
