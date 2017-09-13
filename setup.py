@@ -14,6 +14,7 @@ entry_points = """
 main = generator2.server:main
 [console_scripts]
 initializedb = generator2.scripts.initializedb:main
+getprops = generator2.scripts.getprops:main
 """
 
 setup(

@@ -204,3 +204,4 @@ pip-selfcheck.json
 
 ### User
 *.sqlite*
+initialprops.json

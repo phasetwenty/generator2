@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "wds": "rimraf bundle/* && webpack-dev-server"
+    "wds": "rimraf bundle/* && webpack-dev-server --port 8081"
   },
   "author": "Christopher Haverman",
   "license": "UNLICENSED",

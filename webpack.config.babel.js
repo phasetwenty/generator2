@@ -2,9 +2,13 @@
  * Copyright 2017 Christopher Haverman
  * All Rights Reserved
  **/
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+import fs from 'fs';
 import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
+function readInitialProps() {
+  return fs.readFileSync('initialprops.json', 'utf8').trim();
+}
 
 export default {
   //the base directory (absolute path) for resolving the entry option
@@ -25,7 +29,11 @@ export default {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({title: 'horse', template: 'src/server/generator2/templates/home.jinja2'})
+    new HtmlWebpackPlugin({
+      initialProps: readInitialProps(),
+      title: 'horse',
+      template: 'src/server/generator2/templates/home.html.ejs'
+    })
   ],
 
   module: {
