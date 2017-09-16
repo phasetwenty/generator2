@@ -5,9 +5,10 @@
 import MainNav from './MainNav';
 import {Navbar, NavbarBrand} from 'reactstrap';
 import OutputTable from './OutputTable';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-const App = () => {
+const App = (props) => {
   return (
     <div>
       <Navbar color="dark" className="text-light">
@@ -16,7 +17,7 @@ const App = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-3">
-            <MainNav/>
+            <MainNav items={props.navItems}/>
           </div>
           <div className="col-4">
             <OutputTable/>
@@ -25,6 +26,10 @@ const App = () => {
       </div>
     </div>
   );
+};
+
+App.propTypes = {
+  navItems: PropTypes.array.isRequired
 };
 
 export default App;
