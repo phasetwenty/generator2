@@ -30,7 +30,12 @@ class Views:
 
     @view_config(route_name='random_object')
     def random_object(self):
-        random_object = self._object_service.random_object
+        slug = self.request.matchdict.get('slug', None)
+        if not slug:
+            self.response.status = 500
+            self.response.text = 'Tried to get a random object but the slug was missing.'
+            return self.response
+        random_object = self._object_service.random_object(slug)
         if random_object is None:
             self.response.status = 500
             self.response.text = 'You got a bug homey'

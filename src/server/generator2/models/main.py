@@ -45,6 +45,7 @@ class Object(Base):
     __tablename__ = 'objects'
     id = Column(Integer, primary_key=True)
     kind = Column(Text, nullable=False)
+    slug = Column(Text, nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
     subcategory_id = Column(Integer, ForeignKey('subcategories.id'))
 

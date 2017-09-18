@@ -4,10 +4,9 @@
 from random import randint
 import logging
 
-from sqlalchemy import or_
 from sqlalchemy.exc import DBAPIError
 
-from ..models import Instance, Object, Property
+from ..models import Object, Property
 
 __author__ = 'Christopher Haverman'
 
@@ -21,10 +20,13 @@ class ObjectService:
     def __init__(self, dbsession):
         self._dbsession = dbsession
 
-    @property
-    def random_object(self):
+    def random_object(self, slug):
+        """
+        :param slug: DB slug to match an object to.
+        :return: A dict mapping property labels to instances.
+        """
         try:
-            my_object = self._dbsession.query(Object).first()
+            my_object = self._dbsession.query(Object).filter(Object.slug == slug).one()
         except DBAPIError:
             _logger.exception('Failed to lookup object in database')
             return None

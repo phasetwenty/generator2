@@ -2,24 +2,23 @@
  * Copyright 2017 Christopher Haverman
  * All Rights Reserved
  **/
-import React, {Component, PropTypes} from 'react';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import {Table} from 'reactstrap';
-import 'whatwg-fetch';
 
 class OutputTable extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {properties: {}};
   }
 
   componentWillMount() {
-    fetch('http://localhost:8080/api/v1/random-object')
-      .then((response) => {
-        return response.json();
-      }).then((json) => {
-        this.setState(json.objects[0]);
-      });
+    this._update(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this._update(nextProps);
   }
 
   renderEmpty() {
@@ -54,8 +53,8 @@ class OutputTable extends Component {
   }
 
   renderWithData() {
-    const items = Object.keys(this.state).map((key, index) => {
-      return this.renderSingleCell(index, key, this.state[key])
+    const items = Object.keys(this.state.properties).map((key, index) => {
+      return this.renderSingleCell(index, key, this.state.properties[key])
     });
     return (<tbody>{items}</tbody>);
   }
@@ -65,15 +64,23 @@ class OutputTable extends Component {
   }
 
   render() {
-    const itemCount = Object.keys(this.state).length;
+    const itemCount = Object.keys(this.state.properties).length;
     return (
         <Table inverse>
           {itemCount === 0 ? this.renderEmpty() : this.renderWithData()}
         </Table>
     );
   }
+
+  _update(props) {
+    props.fetchPromise(props.match.params.slug).then((json) => {
+        this.setState({properties: json.objects[0]});
+    });
+  }
 }
 
-OutputTable.propTypes = {};
+OutputTable.propTypes = {
+  fetchPromise: PropTypes.func.isRequired
+};
 
 export default OutputTable;

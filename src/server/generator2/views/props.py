@@ -28,7 +28,7 @@ class Props:
                     'subcategories': [
                         {
                             'name': subcategory.name,
-                            'items': [(object_.kind,) for object_ in subcategory.objects]
+                            'items': [(object_.kind, object_.slug) for object_ in subcategory.objects]
                         }
                         for subcategory in category.subcategories
                     ]

@@ -2,7 +2,8 @@
  * Copyright 2017 Christopher Haverman
  * All Rights Reserved
  **/
-import {Nav, NavItem, NavLink} from 'reactstrap';
+import {Link} from 'react-router-dom';
+import {Nav, NavItem} from 'reactstrap';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
@@ -17,7 +18,9 @@ class MainNav extends Component {
               return (
                   <div key={subcategoryIndex}>
                     <MainNavSection offsetClass="ml-2" text={subcategoryItem.name}/>
-                    {subcategoryItem.items.map((itemPair, index) => <MainNavItem key={index} text={itemPair[0]}/>)}
+                    {subcategoryItem.items.map((itemPair, index) => {
+                      return <MainNavItem key={index} target={`/${itemPair[1]}`} text={itemPair[0]}/>
+                    })}
                   </div>
               );
             })
@@ -50,10 +53,11 @@ MainNavSection.propTypes = {
 };
 
 export const MainNavItem = (props) => {
-  return <NavItem className="ml-3"><NavLink href="#">{props.text}</NavLink></NavItem>;
+  return <NavItem className="ml-3"><Link to={props.target}>{props.text}</Link></NavItem>;
 };
 
 MainNavItem.propTypes = {
+  target: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired
 };
 
