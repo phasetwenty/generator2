@@ -12,7 +12,8 @@ describe('MainNav', () => {
   const items = [
     {
       "name": "Top-level",
-      "subcategories": [{"name": "Second-level", "items": [["Thieves"], ["Nobles"]]}]
+      "subcategories": [{"name": "Second-level", "objects": [["Thieves"], ["Nobles"]]}],
+      "objects": []
     }
   ];
 

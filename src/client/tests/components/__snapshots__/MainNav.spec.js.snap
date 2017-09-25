@@ -5,11 +5,13 @@ exports[`MainNav matches snapshot 1`] = `
   className="nav flex-column"
 >
   <div>
-    <li
-      className="ml-1 nav-item"
-    >
-      Top-level
-    </li>
+    <div>
+      <li
+        className="ml-1 nav-item"
+      >
+        Top-level
+      </li>
+    </div>
     <div>
       <li
         className="ml-2 nav-item"

@@ -28,10 +28,11 @@ class Props:
                     'subcategories': [
                         {
                             'name': subcategory.name,
-                            'items': [(object_.kind, object_.slug) for object_ in subcategory.objects]
+                            'objects': [(object_.kind, object_.slug) for object_ in subcategory.objects]
                         }
                         for subcategory in category.subcategories
-                    ]
+                    ],
+                    'objects': [(object_.kind, object_.slug) for object_ in category.objects if len(category.subcategories) == 0]
                 }
                 for category in categories
             ]
