@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MainNav matches snapshot 1`] = `
+<ul
+  className="nav flex-column"
+>
+  <div>
+    <li
+      className="ml-1 nav-item"
+    >
+      Top-level
+    </li>
+    <div>
+      <li
+        className="ml-2 nav-item"
+      >
+        Second-level
+      </li>
+      <li
+        className="ml-3 nav-item"
+      >
+        <a
+          href="/undefined"
+          onClick={[Function]}
+        >
+          Thieves
+        </a>
+      </li>
+      <li
+        className="ml-3 nav-item"
+      >
+        <a
+          href="/undefined"
+          onClick={[Function]}
+        >
+          Nobles
+        </a>
+      </li>
+    </div>
+  </div>
+</ul>
+`;
