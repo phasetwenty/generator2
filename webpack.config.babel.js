@@ -4,6 +4,7 @@
  **/
 import fs from 'fs';
 import path from 'path';
+import {ProvidePlugin} from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 function readInitialProps() {
@@ -33,7 +34,13 @@ export default {
       initialProps: readInitialProps(),
       title: 'horse',
       template: 'src/server/generator2/templates/home.html.ejs'
-    })
+    }),
+    new ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default']
+    }),
   ],
 
   module: {

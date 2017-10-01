@@ -2,6 +2,7 @@
  * Copyright 2017 Christopher Haverman
  * All Rights Reserved
  **/
+import MutableInstance from './MutableInstance';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {Table} from 'reactstrap';
@@ -60,7 +61,7 @@ class OutputTable extends Component {
   }
 
   renderSingleCell(key, labelText, value) {
-    return (<tr key={key}><th>{labelText}</th><td>{value}</td></tr>);
+    return (<tr key={key}><th>{labelText}</th><td><MutableInstance label={value}/></td></tr>);
   }
 
   render() {
