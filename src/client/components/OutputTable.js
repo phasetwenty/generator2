@@ -15,11 +15,11 @@ class OutputTable extends Component {
   }
 
   componentWillMount() {
-    this._update(this.props);
+    this._update(this.props.fetchPromise, this.props.match.params.slug);
   }
 
   componentWillReceiveProps(nextProps) {
-    this._update(nextProps);
+    this._update(nextProps.fetchPromise, nextProps.match.params.slug);
   }
 
   renderEmpty() {
@@ -73,8 +73,8 @@ class OutputTable extends Component {
     );
   }
 
-  _update(props) {
-    props.fetchPromise(props.match.params.slug).then((json) => {
+  _update(fetchPromise, slug) {
+    fetchPromise(slug).then((json) => {
         this.setState({properties: json.objects[0]});
     });
   }
