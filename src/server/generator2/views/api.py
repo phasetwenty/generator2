@@ -18,16 +18,6 @@ class Views:
 
         self._object_service = ObjectService(request.dbsession)
 
-    @view_config(route_name='test')
-    def test(self):
-        """
-        Test endpoint used as a POC for getting data from the server.
-        :return: Response
-        """
-        names = self._object_service.random_name()
-        self.response.json = names
-        return self.response
-
     @view_config(route_name='random_object')
     def random_object(self):
         slug = self.request.matchdict.get('slug', None)
