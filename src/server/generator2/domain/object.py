@@ -5,7 +5,9 @@ from random import randint
 import logging
 
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm.exc import NoResultFound
 
+from .exceptions import DatabaseLookupFailedError
 from ..models import Object, Property
 
 __author__ = 'Christopher Haverman'
@@ -23,13 +25,15 @@ class ObjectService:
     def random_object(self, slug):
         """
         :param slug: DB slug to match an object to.
-        :return: A dict mapping property labels to instances.
+        :return: A dict mapping property labels to instances. If the slug did not match an entry, None is returned.
+        :raise DatabaseLookupFailedError: When the underlying database operations fail.
         """
         try:
             my_object = self._dbsession.query(Object).filter(Object.slug == slug).one()
-        except DBAPIError:
-            _logger.exception('Failed to lookup object in database')
+        except NoResultFound:
             return None
+        except DBAPIError as e:
+            raise DatabaseLookupFailedError('Unable to look up object with slug "{}".'.format(slug)) from e
 
         additional_properties = (self._dbsession.query(Property).filter(
             Property.category == my_object.category,
