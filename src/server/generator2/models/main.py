@@ -84,3 +84,7 @@ class Instance(Base):
 
     def __str__(self):
         return self.value
+
+    @classmethod
+    def to_json(cls, obj, request):
+        return obj.value

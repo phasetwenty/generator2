@@ -6,7 +6,7 @@ import logging
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from ..domain import DatabaseLookupFailedError, ObjectService
+from ..domain import DatabaseLookupFailedError, ObjectService, PropertyService
 from .response import ApiResponse
 
 __author__ = 'Christopher Haverman'
@@ -20,6 +20,21 @@ class Views:
         self.response.headers['Access-Control-Allow-Origin'] = '*'
 
         self._object_service = ObjectService(request.dbsession)
+        self._property_service = PropertyService(request.dbsession)
+
+    @view_config(route_name='instances')
+    def instances(self):
+        property_id = self.request.matchdict.get('property_id')
+        try:
+            instances = self._property_service.instances_for_id(property_id)
+        except DatabaseLookupFailedError:
+            _logger.exception('Database lookup failed.')
+            self.response.status = 500
+            message = 'There was a problem fetching instances for property ID {}'.format(property_id)
+            self.response.json = ApiResponse(message=message, status=ApiResponse.ERROR).to_dict()
+        else:
+            self.response.json = ApiResponse(status=ApiResponse.OK, objects=instances).to_dict()
+        return self.response
 
     @view_config(route_name='random_object')
     def random_object(self):

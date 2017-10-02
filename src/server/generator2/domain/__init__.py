@@ -3,5 +3,6 @@
 #
 from .exceptions import DatabaseLookupFailedError
 from .object import ObjectService
+from .property import PropertyService
 
 __author__ = 'Christopher Haverman'
