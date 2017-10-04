@@ -3,20 +3,21 @@
 #
 import logging
 
-from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..domain import DatabaseLookupFailedError, ObjectService, PropertyService
-from .response import ApiResponse
+from .message import ErrorMessage, InstanceMessage, ObjectMessage
+from .response import ApiJsonEncoder, ApiResponse
 
 __author__ = 'Christopher Haverman'
 
 _logger = logging.getLogger(__name__)
 
+
 class Views:
     def __init__(self, request):
         self.request = request
-        self.response = Response(content_type='application/json')
+        self.response = ApiResponse(ApiJsonEncoder(), content_type='application/json')
         self.response.headers['Access-Control-Allow-Origin'] = '*'
 
         self._object_service = ObjectService(request.dbsession)
@@ -29,31 +30,30 @@ class Views:
             instances = self._property_service.instances_for_id(property_id)
         except DatabaseLookupFailedError:
             _logger.exception('Database lookup failed.')
-            self.response.status = 500
+            self.response.status_code = 500
             message = 'There was a problem fetching instances for property ID {}'.format(property_id)
-            self.response.json = ApiResponse(message=message, status=ApiResponse.ERROR).to_dict()
+            self.response.json = ErrorMessage(message)
         else:
-            self.response.json = ApiResponse(status=ApiResponse.OK, objects=instances).to_dict()
+            self.response.json = InstanceMessage('', instances)
         return self.response
 
     @view_config(route_name='random_object')
     def random_object(self):
         slug = self.request.matchdict.get('slug', None)
         if not slug:
-            self.response.status = 500
-            self.response.text = 'Tried to get a random object but the slug was missing.'
+            self.response.status_code = 400
+            self.response.json = ErrorMessage('Tried to lookup an object but the slug was missing.')
             return self.response
         try:
             random_object = self._object_service.random_object(slug)
         except DatabaseLookupFailedError:
             _logger.exception('Database lookup failed.')
             self.response.status = 500
-            self.response.text = 'You got a bug homey'
+            self.response.json = ErrorMessage('Unknown failure looking up object with slug "{}".'.format(slug))
         else:
             if random_object is None:
                 self.response.status = 404
-                self.response.json = ApiResponse(message='No object named "{}" found.'.format(slug),
-                                                 status=ApiResponse.ERROR).to_dict()
+                self.response.json = ErrorMessage('No object named "{}" found.'.format(slug))
                 return self.response
-            self.response.json = ApiResponse(objects=[random_object], status='ok').to_dict()
+            self.response.json = ObjectMessage('', [random_object])
         return self.response

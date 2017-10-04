@@ -13,8 +13,15 @@ from .meta import Base
 
 __author__ = 'Christopher Haverman'
 
+class _JsonMixin:
+    """
+    Provides the obvious JSON representation to each model.
+    """
+    def __json__(self):
+        return str(self)
 
-class Category(Base):
+
+class Category(Base, _JsonMixin):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
@@ -27,7 +34,7 @@ class Category(Base):
         return self.name
 
 
-class Subcategory(Base):
+class Subcategory(Base, _JsonMixin):
     __tablename__ = 'subcategories'
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
@@ -41,7 +48,7 @@ class Subcategory(Base):
         return self.name
 
 
-class Object(Base):
+class Object(Base, _JsonMixin):
     __tablename__ = 'objects'
     id = Column(Integer, primary_key=True)
     kind = Column(Text, nullable=False)
@@ -57,7 +64,7 @@ class Object(Base):
         return self.kind
 
 
-class Property(Base):
+class Property(Base, _JsonMixin):
     __tablename__ = 'properties'
     id = Column(Integer, primary_key=True)
     label = Column(Text, nullable=False)
@@ -74,7 +81,7 @@ class Property(Base):
         return self.label
 
 
-class Instance(Base):
+class Instance(Base, _JsonMixin):
     __tablename__ = 'instances'
     id = Column(Integer, primary_key=True)
     value = Column(Text)
@@ -84,7 +91,3 @@ class Instance(Base):
 
     def __str__(self):
         return self.value
-
-    @classmethod
-    def to_json(cls, obj, request):
-        return obj.value
