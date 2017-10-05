@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "jest src/client/tests",
+    "precommit:py": "pytest --quiet",
+    "unittest:js": "jest src/client/tests",
+    "unittest:py": "pytest",
     "wds": "rimraf bundle/* && webpack-dev-server --port 8081"
   },
   "author": "Christopher Haverman",
@@ -42,5 +44,9 @@
     "webpack-bundle-tracker": "^0.2.0",
     "webpack-dev-server": "^2.7.1",
     "whatwg-fetch": "^2.0.3"
-  }
+  },
+  "pre-commit": [
+    "precommit:py",
+    "unittest:js"
+  ]
 }
