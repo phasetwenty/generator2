@@ -37,15 +37,22 @@ class Views:
             self.response.json = InstanceMessage('', instances)
         return self.response
 
+    @view_config(route_name='object')
+    def object(self):
+        return self._object_helper(self._object_service.full_object)
+
     @view_config(route_name='random_object')
     def random_object(self):
+        return self._object_helper(self._object_service.random_object)
+
+    def _object_helper(self, lookup_fn):
         slug = self.request.matchdict.get('slug', None)
         if not slug:
             self.response.status_code = 400
             self.response.json = ErrorMessage('Tried to lookup an object but the slug was missing.')
             return self.response
         try:
-            random_object = self._object_service.random_object(slug)
+            random_object = lookup_fn(slug)
         except DatabaseLookupFailedError:
             _logger.exception('Database lookup failed.')
             self.response.status = 500

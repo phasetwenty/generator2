@@ -11,7 +11,10 @@ class OutputTable extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {properties: {}};
+    this.state = {
+      properties: [],
+      selections: {}
+    };
   }
 
   componentWillMount() {
@@ -54,18 +57,25 @@ class OutputTable extends Component {
   }
 
   renderWithData() {
-    const items = Object.keys(this.state.properties).map((key, index) => {
-      return this.renderSingleCell(index, key, this.state.properties[key])
-    });
+    const items = this.state.properties.map((property, index) => this.renderSingleCell(index, property));
     return (<tbody>{items}</tbody>);
   }
 
-  renderSingleCell(key, labelText, value) {
-    return (<tr key={key}><th>{labelText}</th><td><MutableInstance label={value}/></td></tr>);
+  renderSingleCell(key, property) {
+    const selectId = property.label;
+    const selection = this.state.selections[selectId];
+    return (
+        <tr key={key}>
+          <th>{property.label}</th>
+          <td>
+            <MutableInstance label={selection} items={property.instances} onSelect={this._onSelect} selectId={selectId}/>
+          </td>
+        </tr>
+    );
   }
 
   render() {
-    const itemCount = Object.keys(this.state.properties).length;
+    const itemCount = this.state.properties.length;
     return (
         <Table inverse>
           {itemCount === 0 ? this.renderEmpty() : this.renderWithData()}
@@ -73,9 +83,20 @@ class OutputTable extends Component {
     );
   }
 
+  _onSelect = (propertyLabel, instanceValue) => {
+    const newSelections = Object.assign({}, this.state.selections, {[propertyLabel]: instanceValue});
+    this.setState({selections: newSelections});
+  };
+
   _update(fetchPromise, slug) {
     fetchPromise(slug).then((json) => {
-        this.setState({properties: json.objects[0]});
+        const properties = json.objects[0].properties;
+        const selections = {};
+        properties.forEach((property) => {
+          selections[property.label] = property.instances[0];
+        });
+
+        this.setState({properties, selections});
     });
   }
 }

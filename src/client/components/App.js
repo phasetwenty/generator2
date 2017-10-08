@@ -35,16 +35,16 @@ export default class App extends Component {
     );
   }
 
-  fetchRandomObject = (slug) => {
+  fetchObject = (slug) => {
     slug = slug || App.DEFAULT_OBJECT;
-    return fetch(`http://localhost:8080/api/v1/${slug}/random`)
+    return fetch(`http://localhost:8080/api/v1/${slug}`)
       .then((response) => {
         return response.json();
       });
   };
 
   outputTable = (props) => {
-    return <OutputTable fetchPromise={this.fetchRandomObject} {...props} />;
+    return <OutputTable fetchPromise={this.fetchObject} {...props} />;
   };
 }
 
