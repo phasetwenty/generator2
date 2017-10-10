@@ -8,15 +8,32 @@ from sqlalchemy.orm.session import Session
 
 from generator2.domain.object import ObjectService
 
+
 class TestObjectService:
     def test_full_object(self, dbsession, object_):
         """
         Ensures that the shape of the dict returned matches expectations.
+
+        The object being tested for looks like:
+        {
+            "kind": "bovine",
+            "slug": "cowslug",
+            "properties": [
+                {
+                    "label": "The cow says",
+                    "instances": ["moo"]
+                },
+                {
+                    "label": "name",
+                    "instances": ["aloysius"]
+                }
+            ]
+        }
         """
         object_under_test = ObjectService(dbsession)
-        actual_object = object_under_test.full_object('horse')
+        actual_object = object_under_test.full_object('cowslug')
         assert 'bovine' == actual_object.get('kind')
-        assert 'cow' == actual_object.get('slug')
+        assert 'cowslug' == actual_object.get('slug')
         assert 2 == len(actual_object['properties'])
 
         property_ = actual_object.get('properties')[0]
@@ -56,7 +73,7 @@ class TestObjectService:
     def object_(self, property_):
         object_ = Mock()
         type(object_).kind = PropertyMock(return_value='bovine')
-        type(object_).slug = PropertyMock(return_value='cow')
+        type(object_).slug = PropertyMock(return_value='cowslug')
         type(object_).properties = PropertyMock(return_value=[property_])
         return object_
 
