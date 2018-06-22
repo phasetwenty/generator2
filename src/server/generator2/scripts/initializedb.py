@@ -32,6 +32,7 @@ def main(argv=None):
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
 
+
 if __name__ == '__main__':
     path_to_script = sys.argv[0]
     print(path_to_script)
