@@ -21,7 +21,7 @@ export default class App extends Component {
               <NavbarBrand>generator</NavbarBrand>
             </Navbar>
             <div className="container-fluid">
-              <div className="row">
+              <div className="row mt-4">
                 <div className="col-3">
                   <MainNav items={this.props.navItems}/>
                 </div>

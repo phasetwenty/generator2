@@ -77,7 +77,7 @@ class OutputTable extends Component {
   render() {
     const itemCount = this.state.properties.length;
     return (
-        <Table inverse>
+        <Table dark>
           {itemCount === 0 ? this.renderEmpty() : this.renderWithData()}
         </Table>
     );
