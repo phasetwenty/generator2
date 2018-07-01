@@ -3,7 +3,7 @@
 #
 import pytest
 
-from generator2.views.message import BaseMessage, DataMessage
+from generator2.models.messages.response import BaseMessage, DataMessage
 
 
 class TestBaseMessage:

@@ -6,7 +6,7 @@ import logging
 from pyramid.view import view_config
 
 from ..domain import DatabaseLookupFailedError, ObjectService, PropertyService
-from .message import ErrorMessage, InstanceMessage, ObjectMessage
+from ..models.messages.response import ErrorMessage, InstanceMessage, ObjectMessage
 from .response import ApiJsonEncoder, ApiResponse
 
 __author__ = 'Christopher Haverman'
