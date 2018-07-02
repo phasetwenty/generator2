@@ -1,12 +1,16 @@
 # Copyright 2017 Christopher Haverman
 # All Rights Reserved
 #
+from json import JSONDecodeError
 import logging
 
 from pyramid.view import view_config
 
 from ..domain import DatabaseLookupFailedError, ObjectService, PropertyService
+from ..domain.formatters import PlainTextFormatter
 from ..models.messages.response import ErrorMessage, InstanceMessage, ObjectMessage
+from ..models.messages.request import FormatMessage, FormatMessageValidator
+from .request import ApiJsonDecoder
 from .response import ApiJsonEncoder, ApiResponse
 
 __author__ = 'Christopher Haverman'
@@ -22,6 +26,38 @@ class Views:
 
         self._object_service = ObjectService(request.dbsession)
         self._property_service = PropertyService(request.dbsession)
+        self._request_decoder = ApiJsonDecoder()
+        self._formatter = PlainTextFormatter()
+        self._format_message_validator = FormatMessageValidator()
+
+    @view_config(route_name='format')
+    def format(self):
+        body = None
+        # noinspection PyBroadException
+        try:
+            str_body = self.request.body.decode('utf-8')
+            body = self._request_decoder.decode(str_body)
+        except JSONDecodeError:
+            _logger.exception('Error parsing json')
+            self.response.status_code = 400
+            self.response.json = {'error': 'invalid json homey'}
+            return self.response
+        except Exception:
+            _logger.exception('Unhandled exception while decoding format request.')
+            self.response.status_code = 500
+            self.response.json = {'error': 'invalid json homey'}
+            return self.response
+
+        self._format_message_validator.validate(**body)
+        if not self._format_message_validator.is_valid:
+            self.response.status_code = 400
+            self.response.json = {'error': ' '.join(self._format_message_validator.errors)}
+            return self.response
+
+        message = FormatMessage(**body)
+
+        self.response.text = self._formatter.format(message)
+        return self.response
 
     @view_config(route_name='instances')
     def instances(self):
